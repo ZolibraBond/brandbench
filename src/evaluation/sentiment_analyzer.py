@@ -3,10 +3,12 @@
 import os
 import json
 import random
+import asyncio
 from typing import Dict, List, Optional, Any
 import yaml
-from openai import OpenAI
+from openai import AsyncOpenAI
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 
 class SentimentAnalyzer:
@@ -23,7 +25,7 @@ class SentimentAnalyzer:
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable is not set")
         
-        self.client = OpenAI(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key)
         self.model = self.config['evaluation']['sentiment_model']
         self.temperature = self.config['evaluation']['sentiment_temperature']
         self.brands = self.config['brands']['all_brands']
@@ -47,7 +49,7 @@ Guidelines for sentiment scoring:
 
 Important: Return ONLY the JSON object with no additional text or explanation."""
     
-    def analyze_sentiment(self, text: str) -> Dict[str, Optional[int]]:
+    async def analyze_sentiment(self, text: str) -> Dict[str, Optional[int]]:
         """
         Analyze sentiment for all brands in a text.
         
@@ -66,7 +68,7 @@ Important: Return ONLY the JSON object with no additional text or explanation.""
         ]
         
         try:
-            response = self.client.chat.completions.create(
+            response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 temperature=self.temperature,
@@ -95,45 +97,70 @@ Important: Return ONLY the JSON object with no additional text or explanation.""
             # Return null for all brands on error
             return {brand: None for brand in self.brands}
     
-    def analyze_batch(self, responses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def analyze_batch(self, responses: List[Dict[str, Any]], batch_size: int = 10) -> List[Dict[str, Any]]:
         """
-        Analyze sentiment for a batch of responses.
+        Analyze sentiment for a batch of responses in parallel.
         
         Args:
             responses: List of response dictionaries with 'content' field
+            batch_size: Number of concurrent analyses to run
             
         Returns:
             List of sentiment analysis results
         """
-        results = []
+        # Create semaphore to limit concurrent requests
+        semaphore = asyncio.Semaphore(batch_size)
         
-        for i, response in enumerate(responses):
-            content = response.get("content", "")
-            prompt = response.get("prompt", "")
-            
-            if not content:
-                # No content to analyze
-                result = {
-                    "prompt": prompt,
-                    "sentiments": {brand: None for brand in self.brands},
-                    "error": "No content to analyze"
-                }
-            else:
-                sentiments = self.analyze_sentiment(content)
-                result = {
-                    "prompt": prompt,
-                    "sentiments": sentiments,
-                    "brands_with_sentiment": [
-                        brand for brand, sentiment in sentiments.items() 
-                        if sentiment is not None
-                    ]
-                }
-            
-            results.append(result)
-            
-            # Progress indicator
-            if (i + 1) % 10 == 0:
-                print(f"Analyzed {i + 1}/{len(responses)} responses")
+        async def analyze_with_semaphore(response: Dict[str, Any], index: int):
+            async with semaphore:
+                content = response.get("content", "")
+                prompt = response.get("prompt", "")
+                
+                if not content:
+                    # No content to analyze
+                    result = {
+                        "prompt": prompt,
+                        "sentiments": {brand: None for brand in self.brands},
+                        "error": "No content to analyze"
+                    }
+                else:
+                    try:
+                        sentiments = await self.analyze_sentiment(content)
+                        result = {
+                            "prompt": prompt,
+                            "sentiments": sentiments,
+                            "brands_with_sentiment": [
+                                brand for brand, sentiment in sentiments.items() 
+                                if sentiment is not None
+                            ]
+                        }
+                    except Exception as e:
+                        print(f"\nError analyzing sentiment: {e}")
+                        result = {
+                            "prompt": prompt,
+                            "sentiments": {brand: None for brand in self.brands},
+                            "error": str(e)
+                        }
+                
+                return index, result
+        
+        # Create all tasks
+        tasks = [analyze_with_semaphore(response, i) for i, response in enumerate(responses)]
+        
+        # Execute with progress bar
+        pbar = tqdm(total=len(responses), desc="Analyzing sentiment")
+        
+        # Process results as they complete
+        results_dict = {}
+        for coro in asyncio.as_completed(tasks):
+            index, result = await coro
+            results_dict[index] = result
+            pbar.update(1)
+        
+        pbar.close()
+        
+        # Sort results by index to maintain order
+        results = [results_dict[i] for i in range(len(responses))]
         
         return results
     

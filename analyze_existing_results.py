@@ -3,6 +3,7 @@
 
 import json
 import sys
+import asyncio
 from datetime import datetime
 from src.evaluation.sentiment_analyzer import SentimentAnalyzer
 from rich.console import Console
@@ -10,7 +11,7 @@ from rich.table import Table
 from rich.panel import Panel
 
 
-def analyze_existing_results(results_file: str, max_items: int = None):
+async def analyze_existing_results(results_file: str, max_items: int = None):
     """Analyze sentiment in existing test results."""
     console = Console()
     
@@ -52,46 +53,30 @@ def analyze_existing_results(results_file: str, max_items: int = None):
         if max_items and count >= max_items:
             break
     
-    # Analyze each response
+    # Analyze all responses in parallel
     console.print(f"\n[bold yellow]Analyzing {len(responses_to_analyze)} responses...[/bold yellow]\n")
     
-    all_results = []
+    # Run batch analysis
+    sentiment_results = await analyzer.analyze_batch(responses_to_analyze, batch_size=10)
     
-    for i, response in enumerate(responses_to_analyze):
-        console.print(f"\n[{i+1}/{len(responses_to_analyze)}] ", end="")
-        console.print(f"[cyan]{response['category']}[/cyan] - {response['prompt'][:60]}...")
-        
-        # Analyze sentiment
-        sentiments = analyzer.analyze_sentiment(response['content'])
-        
-        # Show all brands with their sentiments
-        mentioned_brands = []
-        for brand, score in sentiments.items():
-            if score is not None:
-                mentioned_brands.append((brand, score))
-        
-        if mentioned_brands:
-            # Sort by sentiment (positive first) then by brand name
-            mentioned_brands.sort(key=lambda x: (-x[1], x[0]))
-            brand_strs = []
-            for brand, score in mentioned_brands:
-                sentiment_text = {1: "+", 0: "=", -1: "-"}.get(score, "?")
-                color = {1: "green", 0: "yellow", -1: "red"}.get(score, "white")
-                brand_strs.append(f"[{color}]{brand}({sentiment_text})[/{color}]")
-            console.print("Brands: " + ", ".join(brand_strs))
-        else:
-            console.print("[yellow]No brands mentioned[/yellow]")
-        
-        # Save result
+    # Combine with original response data
+    all_results = []
+    for i, (response, sentiment_result) in enumerate(zip(responses_to_analyze, sentiment_results)):
+        # Merge original response data with sentiment analysis
         analysis_result = {
             "prompt": response['prompt'],
             "category": response['category'],
             "web_search_enabled": response['web_search_enabled'],
             "content": response['content'],
-            "sentiments": sentiments,
-            "mentioned_brands": [b[0] for b in mentioned_brands]
+            "sentiments": sentiment_result['sentiments'],
+            "mentioned_brands": sentiment_result.get('brands_with_sentiment', []),
+            "error": sentiment_result.get('error')
         }
         all_results.append(analysis_result)
+        
+        # Display summary for each result
+        if (i + 1) % 10 == 0 or i == len(responses_to_analyze) - 1:
+            console.print(f"\nProcessed {i + 1}/{len(responses_to_analyze)} responses")
     
     # Aggregate and display summary
     console.print("\n[bold yellow]Aggregating results...[/bold yellow]\n")
@@ -204,7 +189,8 @@ def main():
     
     max_items = int(sys.argv[2]) if len(sys.argv) > 2 else None
     
-    analyze_existing_results(results_file, max_items)
+    # Run async function
+    asyncio.run(analyze_existing_results(results_file, max_items))
 
 
 if __name__ == "__main__":
