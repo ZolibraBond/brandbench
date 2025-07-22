@@ -2,7 +2,6 @@
 
 Tracking brand knowledge and sentiment in AI chatbots.
 
-![Brand Sentiment vs Recall Analysis](data/sentiment/20250722_141059_sentiment_plot.png)
 
 ## Business Purpose
 
@@ -69,6 +68,7 @@ This project will deliver:
  - raw data available for re-processing at a later date
  
 
+![Brand Sentiment vs Recall Analysis](data/sentiment/20250722_141059_sentiment_plot.png)
 
 
 
