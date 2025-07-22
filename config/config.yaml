@@ -3,7 +3,7 @@
 # OpenAI API Configuration
 openai:
   api_key: ${OPENAI_API_KEY}  # Set via environment variable
-  model: gpt-4o
+  model: gpt-4.1
   temperature: 0.7
 
 # Brand Configuration

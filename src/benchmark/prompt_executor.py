@@ -72,7 +72,7 @@ class PromptExecutor:
         
         # Add web search tool if enabled
         if enable_web_search:
-            kwargs["tools"] = [{"type": "web_search_preview"}]
+            kwargs["tools"] = [{"type": "web_search"}]
         
         # Execute the prompt
         start_time = datetime.now()
@@ -103,20 +103,40 @@ class PromptExecutor:
         
         # Extract web search information if available
         if enable_web_search and output:
-            cited_urls = []
-            for item in output:
-                if item.get("type") == "message":
-                    for content in item.get("content", []):
-                        if content.get("type") == "output_text":
-                            annotations = content.get("annotations", [])
-                            for ann in annotations:
-                                if ann.get("type") == "url_citation":
-                                    cited_urls.append(ann["url_citation"]["url"])
-            result["cited_urls"] = cited_urls
+            result["cited_urls"] = self._collect_cited_urls(output)
         else:
             result["cited_urls"] = []
         
         return result
+    
+    def _collect_cited_urls(self, output: List[dict]) -> List[str]:
+        """Return a list of cited URLs, compatible with old and new annotation formats."""
+        urls = []
+        
+        for item in output:
+            if item.get("type") != "message":
+                continue
+            
+            for chunk in item.get("content", []):
+                if chunk.get("type") != "output_text":
+                    continue
+                
+                for ann in chunk.get("annotations", []):
+                    if ann.get("type") != "url_citation":
+                        continue
+                    
+                    # New schema (flat)
+                    url = ann.get("url")
+                    
+                    # Old preview schema (nested object)
+                    if url is None and isinstance(ann.get("url_citation"), dict):
+                        url = ann["url_citation"].get("url")
+                    
+                    if url:
+                        urls.append(url)
+        
+        # de-dupe & keep stable order
+        return list(dict.fromkeys(urls))
     
     async def execute_batch(
         self,
