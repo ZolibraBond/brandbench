@@ -4,6 +4,8 @@
 import json
 import sys
 import asyncio
+import argparse
+import subprocess
 from datetime import datetime
 from src.evaluation.sentiment_analyzer import SentimentAnalyzer
 from rich.console import Console
@@ -11,7 +13,7 @@ from rich.table import Table
 from rich.panel import Panel
 
 
-async def analyze_existing_results(results_file: str, max_items: int = None):
+async def analyze_existing_results(results_file: str, max_items: int = None, create_plot: bool = False):
     """Analyze sentiment in existing test results."""
     console = Console()
     
@@ -45,7 +47,8 @@ async def analyze_existing_results(results_file: str, max_items: int = None):
                     "category": category,
                     "prompt": result["prompt"],
                     "content": result["content"],
-                    "web_search_enabled": result.get("web_search_enabled", False)
+                    "web_search_enabled": result.get("web_search_enabled", False),
+                    "model": result.get("model", "Unknown")
                 })
                 count += 1
                 if max_items and count >= max_items:
@@ -68,6 +71,7 @@ async def analyze_existing_results(results_file: str, max_items: int = None):
             "category": response['category'],
             "web_search_enabled": response['web_search_enabled'],
             "content": response['content'],
+            "model": response.get('model', 'Unknown'),
             "sentiments": sentiment_result['sentiments'],
             "mentioned_brands": sentiment_result.get('brands_with_sentiment', []),
             "error": sentiment_result.get('error')
@@ -102,7 +106,7 @@ async def analyze_existing_results(results_file: str, max_items: int = None):
     sorted_brands = sorted(brands_with_recall, key=lambda x: (-x[1], x[0]))
     
     for brand, recall, metrics in sorted_brands:
-        if metrics["mentions"] > 0:
+        if metrics["mentions"] >= 3:  # Only show brands with 3 or more mentions
             # Calculate average sentiment (-1 to 1 scale)
             avg_sentiment = metrics["net_sentiment"]
             
@@ -178,19 +182,37 @@ async def analyze_existing_results(results_file: str, max_items: int = None):
         json.dump(report_data, f, indent=2)
     
     console.print(f"[green]Analysis report saved to {report_file}[/green]")
+    
+    # Create plot if requested
+    if create_plot:
+        console.print("\n[bold blue]Creating sentiment vs recall plot...[/bold blue]")
+        try:
+            # Call the plotting script
+            plot_output = subprocess.run(
+                [sys.executable, "plot_sentiment_results.py", sentiment_file],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            if plot_output.stdout:
+                console.print(f"[green]{plot_output.stdout.strip()}[/green]")
+        except subprocess.CalledProcessError as e:
+            console.print(f"[red]Error creating plot: {e.stderr}[/red]")
+        except Exception as e:
+            console.print(f"[red]Error creating plot: {str(e)}[/red]")
 
 
 def main():
-    if len(sys.argv) > 1:
-        results_file = sys.argv[1]
-    else:
-        # Default to the most recent results file
-        results_file = "test_results_20250722_103221.json"
+    parser = argparse.ArgumentParser(description="Analyze sentiment in existing test results")
+    parser.add_argument("results_file", nargs="?", default="test_results_20250722_103221.json",
+                        help="Path to the results JSON file")
+    parser.add_argument("--max-items", type=int, help="Maximum number of items to analyze")
+    parser.add_argument("--plot", action="store_true", help="Create a sentiment vs recall scatterplot")
     
-    max_items = int(sys.argv[2]) if len(sys.argv) > 2 else None
+    args = parser.parse_args()
     
     # Run async function
-    asyncio.run(analyze_existing_results(results_file, max_items))
+    asyncio.run(analyze_existing_results(args.results_file, args.max_items, args.plot))
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 # OpenAI API Configuration
 openai:
   api_key: ${OPENAI_API_KEY}  # Set via environment variable
-  model: gpt-4.1
+  model: gpt-4o
   temperature: 0.7
 
 # Brand Configuration
@@ -11,7 +11,6 @@ brands:
   target_brand: "Bond"
   all_brands:
     - "Bond"
-    - "Somfy TaHoma"
     - "Rollease Pulse"
     - "Lutron"
     - "Broadlink"
@@ -22,6 +21,55 @@ brands:
     - "Zigbee"
     - "Z-Wave"
     - "Matter"
+    - "Hunter"
+    - "Hampton Bay"
+    - "YUKIHALU"
+    - "Hunter Douglas"
+    - "Somfy"
+    - "IKEA"
+    - "Yoolax"
+    - "Soma"
+    - "iblinds"
+    - "PowerShades"
+    - "Sun Glow"
+    - "Eclipse Shading Systems"
+    - "Graber"
+    - "Bali"
+    - "SmartWings"
+    - "Inspired Shades"
+    - "Rollerhouses"
+    - "Sunsa"
+    - "E-Wand"
+    - "HILADUO"
+    - "Tokblind"
+    - "BroadLink"
+    - "Dooya"
+    - "Rojaflex"
+    - "Rollease"
+    - "Kensington"
+    - "Shelly"
+    - "Eve"
+    - "Aeotec"
+    - "ESI"
+    - "Qubino"
+    - "SmartWise"
+    - "CYNC"
+    - "Sonoff"
+    - "LoraTap"
+    - "Go Smart"
+    - "Nice"
+    - "CommandFusion"
+    - "Toyama"
+    - "InfiHome"
+    - "Azenco Outdoor"
+    - "Equinox"
+    - "Renson"
+    - "Control4"
+    - "Crestron"
+    - "Savant"
+    - "ELAN"
+    - "RTI"
+    - "URC"
 
 # Evaluation Settings
 evaluation:

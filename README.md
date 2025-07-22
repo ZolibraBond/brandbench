@@ -2,78 +2,7 @@
 
 Tracking brand knowledge and sentiment in AI chatbots.
 
-## Quick Start
-
-### Prerequisites
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Set your OpenAI API key:
-```bash
-export OPENAI_API_KEY="your-api-key-here"
-```
-
-### Running BrandBench
-
-#### 1. Execute Prompts
-
-Test prompts without web search:
-```bash
-python test_prompt_executor.py
-```
-
-Test prompts with web search enabled:
-```bash
-python test_prompt_executor.py --web-search
-```
-
-Options:
-- `--prompt-file`: Path to prompt file (default: `prompts/prompts.yaml`)
-- `--num-prompts`: Total number of prompts to test (default: all)
-- `--category`: Test only a specific category (e.g., `ceiling_fans`, `shades`)
-- `--web-search`: Enable web search for responses
-
-Examples:
-```bash
-# Test all prompts with web search
-python test_prompt_executor.py --web-search
-
-# Test only 10 prompts total
-python test_prompt_executor.py --num-prompts 10
-
-# Test only shades category
-python test_prompt_executor.py --category shades --web-search
-```
-
-#### 2. Analyze Sentiment
-
-Analyze the most recent results:
-```bash
-python analyze_existing_results.py
-```
-
-Analyze a specific results file:
-```bash
-python analyze_existing_results.py data/responses/20250722_143021_responses.json
-```
-
-### Output
-
-- **Responses**: Saved to `data/responses/YYYYMMDD_HHMMSS_responses.json`
-- **Sentiment Analysis**: Saved to `data/sentiment/YYYYMMDD_HHMMSS_sentiment.json`
-- **Analysis Reports**: Saved to `data/analysis/YYYYMMDD_HHMMSS_analysis.json`
-
-### Understanding Results
-
-The sentiment analysis shows:
-- **Recall**: Percentage of prompts where each brand was mentioned
-- **Average Sentiment**: Average sentiment score (-1 to +1) when mentioned
-  - +1: Positive (recommended, praised)
-  - 0: Neutral (factual mention)
-  - -1: Negative (criticized, problematic)
+![Brand Sentiment vs Recall Analysis](data/sentiment/20250722_141059_sentiment_plot.png)
 
 ## Business Purpose
 
@@ -143,7 +72,97 @@ This project will deliver:
 
 
 
+## Quick Start
 
+### Prerequisites
 
+1. **Python 3.8+** required
+
+2. **Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Set your OpenAI API key:**
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+```
+
+### Running BrandBench
+
+BrandBench operates in three steps: **Execute → Analyze → Visualize**
+
+#### Step 1: Execute Prompts
+
+Generate AI responses to consumer queries about smart home automation:
+
+```bash
+# Quick start - test with web search enabled (recommended)
+python test_prompt_executor.py --web-search
+
+# Test without web search (uses model's intrinsic knowledge only)
+python test_prompt_executor.py
+```
+
+**Options:**
+- `--web-search`: Enable web search for more current information (recommended)
+- `--num-prompts N`: Test only N prompts total (useful for testing)
+- `--category NAME`: Test only a specific category (`ceiling_fans` or `shades`)
+- `--prompt-file PATH`: Use custom prompt file (default: `prompts/prompts.yaml`)
+
+**Examples:**
+```bash
+# Test 20 prompts from shades category with web search
+python test_prompt_executor.py --category shades --num-prompts 20 --web-search
+
+# Test all prompts
+python test_prompt_executor.py --web-search
+```
+
+#### Step 2: Analyze Sentiment
+
+Analyze brand sentiment in the generated responses:
+
+```bash
+# Analyze most recent results and create visualization
+python analyze_existing_results.py --plot
+
+# Analyze specific results file
+python analyze_existing_results.py data/responses/20250722_143021_responses.json --plot
+```
+
+This will:
+- Extract brand mentions from each response
+- Score sentiment (positive/neutral/negative) for each brand
+- Calculate recall rates (how often each brand is mentioned)
+- Generate a scatter plot visualization
+
+#### Step 3: View Results
+
+After analysis, you'll find:
+- **Sentiment plot**: `data/sentiment/*_sentiment_plot.png`
+- **Raw sentiment data**: `data/sentiment/*_sentiment.json`
+- **Analysis report**: `data/analysis/*_analysis.json`
+
+The plot shows:
+- **X-axis**: Average sentiment (-1 to +1)
+- **Y-axis**: Recall percentage (how often mentioned)
+- **Bubble size**: Number of mentions
+- **Target brand (Bond)**: Highlighted in yellow
+
+### Output
+
+- **Responses**: Saved to `data/responses/YYYYMMDD_HHMMSS_responses.json`
+- **Sentiment Analysis**: Saved to `data/sentiment/YYYYMMDD_HHMMSS_sentiment.json`
+- **Analysis Reports**: Saved to `data/analysis/YYYYMMDD_HHMMSS_analysis.json`
+
+### Understanding Results
+
+The sentiment analysis shows:
+- **Recall**: Percentage of prompts where each brand was mentioned
+- **Average Sentiment**: Average sentiment score (-1 to +1) when mentioned
+  - +1: Positive (recommended, praised)
+  - 0: Neutral (factual mention)
+  - -1: Negative (criticized, problematic)
 
 

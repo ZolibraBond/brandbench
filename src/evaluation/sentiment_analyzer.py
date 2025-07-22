@@ -42,7 +42,7 @@ class SentimentAnalyzer:
 The exact list of brands is as follows: {brand_list}.
 
 Guidelines for sentiment scoring:
-- 1 (positive): Brand is recommended, praised, or described with positive attributes
+- 1 (positive): Brand is recommended, praised, or described with positive attributes (use sparingly)
 - 0 (neutral): Brand is mentioned factually without clear positive or negative sentiment
 - -1 (negative): Brand is criticized, described as problematic, or compared unfavorably
 - null: Brand is not mentioned in the article
@@ -183,6 +183,10 @@ Important: Return ONLY the JSON object with no additional text or explanation.""
             sentiments = result.get("sentiments", {})
             for brand, sentiment in sentiments.items():
                 if sentiment is not None:
+                    # Initialize brand if not already in dictionary
+                    if brand not in brand_sentiments:
+                        brand_sentiments[brand] = {"positive": 0, "neutral": 0, "negative": 0, "mentions": 0}
+                    
                     brand_sentiments[brand]["mentions"] += 1
                     if sentiment == 1:
                         brand_sentiments[brand]["positive"] += 1
