@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import asyncio
 from datetime import datetime
 from src.benchmark.prompt_executor import PromptExecutor
 from rich.console import Console
@@ -11,7 +12,7 @@ from rich.panel import Panel
 from rich.text import Text
 
 
-def test_prompt_executor(
+async def test_prompt_executor(
     prompt_file: str,
     num_prompts: int = None,
     enable_web_search: bool = False,
@@ -67,10 +68,10 @@ def test_prompt_executor(
     for cat, prompts in limited_prompts.items():
         console.print(f"\n[bold yellow]Processing category: {cat}[/bold yellow]")
         
-        results = executor.execute_batch(
+        results = await executor.execute_batch(
             prompts, 
             enable_web_search=enable_web_search,
-            batch_size=5
+            batch_size=10
         )
         all_results[cat] = results
         
@@ -176,12 +177,13 @@ def main():
     
     args = parser.parse_args()
     
-    test_prompt_executor(
+    # Run async function
+    asyncio.run(test_prompt_executor(
         args.prompt_file,
         args.num_prompts,
         args.web_search,
         args.category
-    )
+    ))
 
 
 if __name__ == "__main__":

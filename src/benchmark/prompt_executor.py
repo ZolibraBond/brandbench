@@ -2,11 +2,13 @@
 
 import os
 import json
+import asyncio
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Tuple
 import yaml
-from openai import OpenAI
+from openai import AsyncOpenAI
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 
 class PromptExecutor:
@@ -23,7 +25,7 @@ class PromptExecutor:
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable is not set")
         
-        self.client = OpenAI(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key)
         self.model = self.config['openai']['model']
         self.temperature = self.config['openai']['temperature']
     
@@ -35,7 +37,7 @@ class PromptExecutor:
         # Skip comment lines and return the categorized prompts
         return {k: v for k, v in data.items() if not k.startswith('#')}
     
-    def execute_prompt(
+    async def execute_prompt(
         self,
         prompt: str,
         enable_web_search: bool = False,
@@ -74,7 +76,7 @@ class PromptExecutor:
         
         # Execute the prompt
         start_time = datetime.now()
-        response = self.client.responses.create(**kwargs)
+        response = await self.client.responses.create(**kwargs)
         response_dict = response.model_dump()
         end_time = datetime.now()
         
@@ -116,7 +118,7 @@ class PromptExecutor:
         
         return result
     
-    def execute_batch(
+    async def execute_batch(
         self,
         prompts: List[str],
         enable_web_search: bool = False,
@@ -124,38 +126,56 @@ class PromptExecutor:
         batch_size: int = 10
     ) -> List[Dict[str, Any]]:
         """
-        Execute a batch of prompts.
+        Execute a batch of prompts in parallel using async.
         
         Args:
             prompts: List of prompts to execute
             enable_web_search: Whether to enable web search
             system_message: Optional system message
-            batch_size: Number of prompts to process at once
+            batch_size: Number of prompts to process concurrently
             
         Returns:
             List of results for each prompt
         """
         results = []
         
-        for i in range(0, len(prompts), batch_size):
-            batch = prompts[i:i + batch_size]
-            print(f"Processing batch {i//batch_size + 1}/{(len(prompts) + batch_size - 1)//batch_size}")
-            
-            for prompt in batch:
+        # Create semaphore to limit concurrent requests
+        semaphore = asyncio.Semaphore(batch_size)
+        
+        async def execute_with_semaphore(prompt: str, index: int):
+            async with semaphore:
                 try:
-                    result = self.execute_prompt(prompt, enable_web_search, system_message)
-                    results.append(result)
+                    result = await self.execute_prompt(prompt, enable_web_search, system_message)
+                    return index, result
                 except Exception as e:
-                    print(f"Error processing prompt '{prompt[:50]}...': {e}")
-                    results.append({
+                    return index, {
                         "prompt": prompt,
                         "error": str(e),
                         "timestamp": datetime.now().isoformat()
-                    })
+                    }
+        
+        # Create all tasks
+        tasks = [execute_with_semaphore(prompt, i) for i, prompt in enumerate(prompts)]
+        
+        # Execute with progress bar
+        pbar = tqdm(total=len(prompts), desc="Processing prompts")
+        
+        # Process results as they complete
+        results_dict = {}
+        for coro in asyncio.as_completed(tasks):
+            index, result = await coro
+            results_dict[index] = result
+            pbar.update(1)
+        
+        pbar.close()
+        
+        # Sort results by index to maintain order
+        results = [results_dict[i] for i in range(len(prompts))]
         
         return results
     
-    def execute_prompt_file(
+    
+    async def execute_prompt_file(
         self,
         prompt_file: str,
         enable_web_search: bool = False,
@@ -182,7 +202,7 @@ class PromptExecutor:
                 continue
             
             print(f"\nProcessing category: {category}")
-            results[category] = self.execute_batch(
+            results[category] = await self.execute_batch(
                 prompts, enable_web_search, system_message
             )
         
