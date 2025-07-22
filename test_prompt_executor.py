@@ -13,11 +13,11 @@ from rich.text import Text
 
 def test_prompt_executor(
     prompt_file: str,
-    num_prompts: int = 5,
+    num_prompts: int = None,
     enable_web_search: bool = False,
     category: str = None
 ):
-    """Test the prompt executor with a limited number of prompts."""
+    """Test the prompt executor with optional prompt limit."""
     console = Console()
     
     # Initialize the executor
@@ -35,10 +35,27 @@ def test_prompt_executor(
             console.print(f"[red]Category '{category}' not found in prompt file[/red]")
             return
     
-    # Limit prompts per category
-    limited_prompts = {}
-    for cat, prompts in prompts_by_category.items():
-        limited_prompts[cat] = prompts[:num_prompts]
+    # Apply global limit if specified
+    if num_prompts:
+        # Collect all prompts across categories
+        all_prompts = []
+        for cat, prompts in prompts_by_category.items():
+            for prompt in prompts:
+                all_prompts.append((cat, prompt))
+        
+        # Limit total prompts
+        if len(all_prompts) > num_prompts:
+            all_prompts = all_prompts[:num_prompts]
+        
+        # Reconstruct categories with limited prompts
+        limited_prompts = {}
+        for cat, prompt in all_prompts:
+            if cat not in limited_prompts:
+                limited_prompts[cat] = []
+            limited_prompts[cat].append(prompt)
+    else:
+        # Use all prompts
+        limited_prompts = prompts_by_category
     
     # Display what we're testing
     total_prompts = sum(len(p) for p in limited_prompts.values())
@@ -137,14 +154,14 @@ def main():
     parser.add_argument(
         "--prompt-file",
         type=str,
-        default="prompts/research_intent.yaml",
+        default="prompts/prompts.yaml",
         help="Path to the prompt YAML file"
     )
     parser.add_argument(
         "--num-prompts",
         type=int,
-        default=5,
-        help="Number of prompts to test per category"
+        default=None,
+        help="Total number of prompts to test (default: all)"
     )
     parser.add_argument(
         "--web-search",

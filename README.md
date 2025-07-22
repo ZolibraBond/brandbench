@@ -31,14 +31,21 @@ python test_prompt_executor.py --web-search
 ```
 
 Options:
-- `--prompt-file`: Path to prompt file (default: `prompts/research_intent.yaml`)
-- `--num-prompts`: Number of prompts per category to test (default: 5)
-- `--category`: Test only a specific category
+- `--prompt-file`: Path to prompt file (default: `prompts/prompts.yaml`)
+- `--num-prompts`: Total number of prompts to test (default: all)
+- `--category`: Test only a specific category (e.g., `ceiling_fans`, `shades`)
 - `--web-search`: Enable web search for responses
 
-Example:
+Examples:
 ```bash
-python test_prompt_executor.py --prompt-file prompts/shopping_intent.yaml --num-prompts 3 --category shades --web-search
+# Test all prompts with web search
+python test_prompt_executor.py --web-search
+
+# Test only 10 prompts total
+python test_prompt_executor.py --num-prompts 10
+
+# Test only shades category
+python test_prompt_executor.py --category shades --web-search
 ```
 
 #### 2. Analyze Sentiment
