@@ -1,0 +1,50 @@
+# Research Intent Prompts
+# Users trying to solve home automation problems
+
+voice_control:
+  - "How can I control my shades with Alexa?"
+  - "Control garage door with voice commands"
+  - "Voice control for ceiling fans"
+  - "Google Assistant for blinds control"
+
+brand_specific:
+  - "How can I control Somfy shades?"
+  - "Control Hunter Douglas shades with smartphone"
+  - "Lutron shade automation setup"
+  - "Connect Bali blinds to smart home"
+
+technical:
+  - "Cloning RF remote controls"
+  - "RF to WiFi bridge for home automation"
+  - "433MHz remote control integration"
+  - "IR blaster for shade control"
+
+general_solution:
+  - "Smart home hub for motorized blinds"
+  - "Best way to control window treatments"
+  - "Universal remote for home automation"
+  - "Smart home integration options"
+
+automation:
+  - "How to automate window shades"
+  - "Schedule automatic blind control"
+  - "Sunrise sunset shade automation"
+  - "Temperature based shade control"
+
+retrofit:
+  - "Make dumb blinds smart"
+  - "Add smart control to existing shades"
+  - "Retrofit motorized blinds with WiFi"
+  - "Convert manual blinds to automated"
+
+ceiling_fan:
+  - "Integrate ceiling fan with smart home"
+  - "Smart control for ceiling fan and light"
+  - "RF ceiling fan to smart home"
+  - "Control Hampton Bay fan remotely"
+
+garage_door:
+  - "Smart garage door opener options"
+  - "Add WiFi to existing garage door"
+  - "Garage door automation safety"
+  - "MyQ alternatives for garage control"

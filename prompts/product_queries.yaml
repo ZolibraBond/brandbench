@@ -1,0 +1,38 @@
+# Product Query Prompts
+# FAQ-style questions for accuracy testing (future implementation)
+
+compatibility:
+  - "Does Bond Bridge work with SAVANT?"
+  - "Can Bond Bridge control Lutron shades?"
+  - "Does Bond Bridge connect with Apple HomeKit?"
+  - "Is Bond Bridge compatible with SmartThings?"
+
+technical_specs:
+  - "What frequency does Bond Bridge use?"
+  - "Bond Bridge range and coverage"
+  - "How many devices can Bond Bridge control?"
+  - "Bond Bridge power requirements"
+
+features:
+  - "Can Bond Bridge learn new remotes?"
+  - "Does Bond Bridge support schedules?"
+  - "Bond Bridge local control without internet"
+  - "Can Bond Bridge control multiple rooms?"
+
+setup_installation:
+  - "How to set up Bond Bridge"
+  - "Bond Bridge installation requirements"
+  - "Do I need a hub for Bond Bridge?"
+  - "Bond Bridge WiFi setup process"
+
+troubleshooting:
+  - "Bond Bridge not connecting to WiFi"
+  - "Bond Bridge not detecting remote"
+  - "Reset Bond Bridge to factory settings"
+  - "Bond Bridge firmware update issues"
+
+comparisons:
+  - "Bond Bridge vs Broadlink RM4"
+  - "Is Bond Bridge better than SwitchBot?"
+  - "Bond Bridge compared to Harmony Hub"
+  - "Why choose Bond over other RF bridges?"

@@ -1,0 +1,39 @@
+# BrandBench Configuration
+
+# OpenAI API Configuration
+openai:
+  api_key: ${OPENAI_API_KEY}  # Set via environment variable
+  model: gpt-4o
+  temperature: 0.7
+
+# Brand Configuration
+brands:
+  target_brand: "Bond"
+  competitors:
+    - "TaHoma"
+    - "Somfy"
+    - "Lutron"
+    - "SmartThings"
+    - "Hubitat"
+    - "Home Assistant"
+    - "Broadlink"
+    - "Control4"
+    - "Savant"
+    - "Crestron"
+    - "Universal Remote Control"
+    - "Logitech Harmony"
+    - "SwitchBot"
+    - "Aqara"
+    - "Zigbee"
+    - "Z-Wave"
+    - "Matter"
+    - "Thread"
+    - "HomeKit"
+    - "Google Home"
+    - "Amazon Alexa"
+
+# Evaluation Settings
+evaluation:
+  sentiment_model: gpt-4o
+  sentiment_temperature: 0.3
+  batch_size: 10
