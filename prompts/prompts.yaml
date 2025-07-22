@@ -1,0 +1,37 @@
+# Research Intent Prompts
+# Users trying to solve home automation problems
+
+ceiling_fans:
+  - "Search for voice command solutions for controlling ceiling fans"
+  - "Search the web for the best smart ceiling fans"
+  - "Find smart hubs compatible with ceiling fan control"
+  - "Research pros and cons of smart ceiling-fan control options"
+
+shades:
+  - "Research pros and cons of smart shade/blind controls focusing on their apps"
+  - "Compare prices of smart home hubs for shade control"
+  - "Search for the cheapest blind automation methods"
+  - "Lookup costs of smart shade controllers"
+  - "Find budget smart-home solutions for shades"
+  - "Search alternatives to TaHoma for Somfy shades"
+  - "Check if I must use the Somfy TaHoma app to control RTS motors"
+  - "Find top-rated smart shade controllers"
+  - "Search for the best RF bridge for smart-shade integration"
+  - "Research the most reliable shade automation systems"
+  - "Find HomeKit-compatible shade controllers"
+  - "Search Z-Wave options for shade control"
+  - "Identify hubs compatible with most shade brands"
+  - "Search compatible devices for my motorized shades"
+  - "Find methods to control motorized shades with voice commands"
+  - "Lookup how to control Hunter Douglas shades via smartphone"
+  - "Search how to connect Rollease or Bali motors to a smart home"
+  - "Find instructions to clone an RF remote control"
+  - "Search for 433 MHz remote control integration methods"
+  - "Lookup IR blaster options for shade control"
+  - "Find smart home hubs suitable for motorized blinds"
+  - "Search best practices for controlling window treatments"
+  - "Research end-to-end window-shade automation"
+  - "Search for sunrise/sunset and weather-based shade automation setups"
+  - "Find ways to trigger motorized screens based on weather events"
+  - "Search methods to automatically close louvered roofs when it rains"
+  - "Lookup solutions to convert manual blinds to automated"
