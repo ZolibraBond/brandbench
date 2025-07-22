@@ -9,31 +9,22 @@ openai:
 # Brand Configuration
 brands:
   target_brand: "Bond"
-  competitors:
-    - "TaHoma"
-    - "Somfy"
+  all_brands:
+    - "Bond"
+    - "Somfy TaHoma"
+    - "Rollease Pulse"
     - "Lutron"
-    - "SmartThings"
-    - "Hubitat"
-    - "Home Assistant"
     - "Broadlink"
-    - "Control4"
-    - "Savant"
-    - "Crestron"
-    - "Universal Remote Control"
     - "Logitech Harmony"
     - "SwitchBot"
     - "Aqara"
+    - "RYSE"
     - "Zigbee"
     - "Z-Wave"
     - "Matter"
-    - "Thread"
-    - "HomeKit"
-    - "Google Home"
-    - "Amazon Alexa"
 
 # Evaluation Settings
 evaluation:
-  sentiment_model: gpt-4o
+  sentiment_model: gpt-4.1
   sentiment_temperature: 0.3
   batch_size: 10

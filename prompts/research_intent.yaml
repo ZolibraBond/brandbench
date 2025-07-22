@@ -1,50 +1,33 @@
 # Research Intent Prompts
 # Users trying to solve home automation problems
 
-voice_control:
-  - "How can I control my shades with Alexa?"
-  - "Control garage door with voice commands"
-  - "Voice control for ceiling fans"
-  - "Google Assistant for blinds control"
+ceiling_fans:
+  - "Control ceiling fans with voice commands"
 
-brand_specific:
+shades:
+  - "How can I control my shades with Alexa?"
+  - "Control motorized shades with voice commands"
+  - "Voice controled blinds"
+  - "Google Assistant for blinds control"
   - "How can I control Somfy shades?"
   - "Control Hunter Douglas shades with smartphone"
-  - "Lutron shade automation setup"
+  - "How can I connect Rollease motors to the smart home."
+  - "How can I connect shade motors to a Control4 system?"
   - "Connect Bali blinds to smart home"
-
-technical:
-  - "Cloning RF remote controls"
+  - "How to clone an RF remote control?"
   - "RF to WiFi bridge for home automation"
   - "433MHz remote control integration"
   - "IR blaster for shade control"
-
-general_solution:
   - "Smart home hub for motorized blinds"
   - "Best way to control window treatments"
   - "Universal remote for home automation"
   - "Smart home integration options"
-
-automation:
   - "How to automate window shades"
   - "Schedule automatic blind control"
   - "Sunrise sunset shade automation"
-  - "Temperature based shade control"
-
-retrofit:
-  - "Make dumb blinds smart"
+  - "How can I trigger my motorized screens based on weather events?"
+  - "Is there a way I can close my louvered roof automatically when it rains?"
+  - "How can I make dumb blinds smart?"
   - "Add smart control to existing shades"
   - "Retrofit motorized blinds with WiFi"
   - "Convert manual blinds to automated"
-
-ceiling_fan:
-  - "Integrate ceiling fan with smart home"
-  - "Smart control for ceiling fan and light"
-  - "RF ceiling fan to smart home"
-  - "Control Hampton Bay fan remotely"
-
-garage_door:
-  - "Smart garage door opener options"
-  - "Add WiFi to existing garage door"
-  - "Garage door automation safety"
-  - "MyQ alternatives for garage control"

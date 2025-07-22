@@ -2,6 +2,72 @@
 
 Tracking brand knowledge and sentiment in AI chatbots.
 
+## Quick Start
+
+### Prerequisites
+
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+2. Set your OpenAI API key:
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+```
+
+### Running BrandBench
+
+#### 1. Execute Prompts
+
+Test prompts without web search:
+```bash
+python test_prompt_executor.py
+```
+
+Test prompts with web search enabled:
+```bash
+python test_prompt_executor.py --web-search
+```
+
+Options:
+- `--prompt-file`: Path to prompt file (default: `prompts/research_intent.yaml`)
+- `--num-prompts`: Number of prompts per category to test (default: 5)
+- `--category`: Test only a specific category
+- `--web-search`: Enable web search for responses
+
+Example:
+```bash
+python test_prompt_executor.py --prompt-file prompts/shopping_intent.yaml --num-prompts 3 --category shades --web-search
+```
+
+#### 2. Analyze Sentiment
+
+Analyze the most recent results:
+```bash
+python analyze_existing_results.py
+```
+
+Analyze a specific results file:
+```bash
+python analyze_existing_results.py data/responses/20250722_143021_responses.json
+```
+
+### Output
+
+- **Responses**: Saved to `data/responses/YYYYMMDD_HHMMSS_responses.json`
+- **Sentiment Analysis**: Saved to `data/sentiment/YYYYMMDD_HHMMSS_sentiment.json`
+- **Analysis Reports**: Saved to `data/analysis/YYYYMMDD_HHMMSS_analysis.json`
+
+### Understanding Results
+
+The sentiment analysis shows:
+- **Recall**: Percentage of prompts where each brand was mentioned
+- **Average Sentiment**: Average sentiment score (-1 to +1) when mentioned
+  - +1: Positive (recommended, praised)
+  - 0: Neutral (factual mention)
+  - -1: Negative (criticized, problematic)
+
 ## Business Purpose
 
 Consumers are increasingly using chatbots in their purchasing journey.  ChatGPT is being used to discover solutions and products as well as to find product information pre- and post-sale.  It is in Olibra's interest to understand---and to the extent possible---to influence the information that chatbots provide to consumers so as to increase sales and ensure our brand is properly represented.

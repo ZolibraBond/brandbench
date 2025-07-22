@@ -89,12 +89,24 @@ def test_prompt_executor(
         
         console.print(table)
     
-    # Save results
+    # Save results with proper structure
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = f"test_results_{timestamp}.json"
+    output_file = f"data/responses/{timestamp}_responses.json"
+    
+    # Prepare data with metadata
+    data = {
+        "timestamp": timestamp,
+        "metadata": {
+            "prompt_file": prompt_file,
+            "web_search_enabled": enable_web_search,
+            "categories": list(all_results.keys()),
+            "total_prompts": sum(len(results) for results in all_results.values())
+        },
+        "responses": all_results
+    }
     
     with open(output_file, 'w') as f:
-        json.dump(all_results, f, indent=2)
+        json.dump(data, f, indent=2)
     
     console.print(f"\n[bold green]Results saved to {output_file}[/bold green]")
     

@@ -1,43 +1,26 @@
 # Shopping Intent Prompts
 # Users with stronger purchase intent
 
-price_comparison:
+ceiling_fans:
+  - "Best smart ceiling fans"
+  - "Help me buy a smart hub to control ceiling fans."
+
+shades:
   - "Compare prices on smart home hubs for shade control"
   - "Cheapest way to automate blinds"
   - "Cost of smart shade controllers"
   - "Budget smart home shade solutions"
-
-product_alternatives:
   - "Are there alternatives to TaHoma?"
-  - "Somfy TaHoma competitors"
-  - "Lutron Caseta alternatives"
-  - "SmartThings vs other hubs for shades"
-
-best_in_category:
-  - "Best smart ceiling fans"
+  - "Do I have to use the Somfy TaHoma app to control RTS motors?"
   - "Top rated smart shade controller"
   - "Best RF bridge for home automation"
   - "Most reliable shade automation system"
-
-specific_needs:
   - "Smart hub that works with Somfy"
   - "WiFi controller for RF blinds"
-  - "HomeKit compatible shade controller"
+  - "HomeKit-compatible shade controller"
   - "Z-Wave shade control options"
-
-bundle_deals:
-  - "Smart home starter kit with shade control"
-  - "Complete shade automation package"
-  - "All-in-one smart home solution"
-  - "Bundle deals for home automation"
-
-reviews_ratings:
-  - "Smart shade controller reviews"
-  - "User experiences with RF bridges"
   - "Most recommended shade automation"
   - "Ratings for smart home hubs"
-
-compatibility_shopping:
   - "Which hub works with most shade brands"
   - "Universal smart home controller"
   - "Compatible devices for my shades"

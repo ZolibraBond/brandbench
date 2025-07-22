@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files - don't commit results
+data/responses/
+data/sentiment/
+data/analysis/
+data/reports/
+
+# Keep the directory structure
+!data/README.md
+
+# Test outputs
+test_results_*.json
+sentiment_analysis_*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
